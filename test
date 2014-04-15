@@ -1,0 +1,4 @@
+var x
+var y
+x = 3
+y = x
