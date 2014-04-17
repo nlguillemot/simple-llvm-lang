@@ -8,8 +8,9 @@ endif()
 
 add_executable(simple
     main.cpp
-    token.hpp lexer.cpp lexer.hpp
-    ast.hpp parser.cpp parser.hpp)
+    token.hpp lexer.hpp lexer.cpp
+    ast.hpp parser.hpp parser.cpp
+    codegen.hpp codegen.cpp)
 
 add_custom_command(TARGET simple POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different

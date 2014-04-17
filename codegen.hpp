@@ -1,0 +1,5 @@
+#ifndef SIMPLE_CODEGEN_HPP
+#define SIMPLE_CODEGEN_HPP
+
+
+#endif // SIMPLE_CODEGEN_HPP
