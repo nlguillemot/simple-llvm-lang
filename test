@@ -1,4 +1,4 @@
-var x
-var y
+local x
+local y
 x = 3
 y = x
