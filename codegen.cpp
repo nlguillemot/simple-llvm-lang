@@ -158,11 +158,18 @@ void CodeGenASTVisitor::Visit(IntegerAST& integer)
 {
     if (CurrentAssignmentOperands)
     {
-        llvm::Value** pOperand = !CurrentAssignmentOperands->first ? &(CurrentAssignmentOperands->first)
-                               : !CurrentAssignmentOperands->second ? &(CurrentAssignmentOperands->second)
-                               : throw std::logic_error("No operands are unfulfilled.");
+        if (!CurrentAssignmentOperands->first)
+        {
+            throw std::logic_error("Assignment has no left operand to assign to.");
+        }
 
-        *pOperand = llvm::ConstantInt::get(
+        if (CurrentAssignmentOperands->second)
+        {
+            throw std::logic_error("Duplicate right operand for assignment.");
+        }
+
+        // The value of this integer will be assigned to the first operand.
+        CurrentAssignmentOperands->second = llvm::ConstantInt::get(
                     llvm::Type::getInt32Ty(Context),
                     integer.IntegerValue);
     }
