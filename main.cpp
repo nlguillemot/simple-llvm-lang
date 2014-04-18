@@ -4,7 +4,10 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 
+#include "codegen.hpp"
 #include "astxml.hpp"
+
+#include <llvm/IR/Module.h>
 
 void run(std::istream& inputStream)
 {
@@ -27,6 +30,14 @@ void run(std::istream& inputStream)
 
     XMLWriterASTVisitor xmlWriter(std::cout);
     pModule->Accept(xmlWriter);
+
+    llvm::LLVMContext& llvmContext = llvm::getGlobalContext();
+    llvm::Module llvmModule("simple", llvmContext);
+
+    CodeGenASTVisitor codeGenerator(llvmModule);
+    pModule->Accept(codeGenerator);
+
+    llvmModule.dump();
 }
 
 int main(int argc, char* argv[])

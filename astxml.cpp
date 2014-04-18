@@ -32,14 +32,14 @@ void XMLWriterASTVisitor::Exit(StatementAST&)
 
 void XMLWriterASTVisitor::Visit(LocalDeclarationStatementAST&)
 {
-    OutputStream << CurrentIndent << "<LocalDeclaration>\n";
+    OutputStream << CurrentIndent << "<LocalDeclarationStatement>\n";
     PushIndent();
 }
 
 void XMLWriterASTVisitor::Exit(LocalDeclarationStatementAST&)
 {
     PopIndent();
-    OutputStream << CurrentIndent << "</LocalDeclaration>\n";
+    OutputStream << CurrentIndent << "</LocalDeclarationStatement>\n";
 }
 
 void XMLWriterASTVisitor::Visit(AssignmentStatementAST&)

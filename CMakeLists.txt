@@ -19,3 +19,6 @@ add_custom_command(TARGET simple POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${PROJECT_SOURCE_DIR}/test"
     $<TARGET_FILE_DIR:simple>)
+
+# TODO: Do this properly with find_package and all
+target_link_libraries(simple LLVM-3.4)
