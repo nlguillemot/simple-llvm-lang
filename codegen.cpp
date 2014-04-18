@@ -13,22 +13,26 @@ CodeGenASTVisitor::CodeGenASTVisitor(llvm::Module& targetModule)
 
 void CodeGenASTVisitor::Visit(ModuleAST&)
 {
+    // The type of the main function
     llvm::FunctionType* MainType = llvm::FunctionType::get(
                 llvm::Type::getInt32Ty(Context),
                 false);
 
+    // The whole program runs within the main function.
     MainFunction = llvm::Function::Create(
                 MainType,
                 llvm::Function::ExternalLinkage,
                 "main",
                 &TargetModule);
 
-    GlobalBasicBlock = llvm::BasicBlock::Create(
+    // This block contains all the instructions within main.
+    MainBasicBlock = llvm::BasicBlock::Create(
                 Context,
                 "entry",
                 MainFunction);
 
-    Builder.SetInsertPoint(GlobalBasicBlock);
+    // The builder is used to add instructions to the main function's block.
+    Builder.SetInsertPoint(MainBasicBlock);
 }
 
 void CodeGenASTVisitor::Exit(ModuleAST& module)
@@ -45,22 +49,22 @@ void CodeGenASTVisitor::Exit(StatementAST& statement)
 
 void CodeGenASTVisitor::Visit(LocalDeclarationStatementAST&)
 {
-    InDeclarationStatement = true;
+    // The alloca instruction is used to push locals on the stack.
+    // This pushes an anonymous local, which will be named in the visit of IdentifierAST
+    CurrentLocalBeingDeclared = Builder.CreateAlloca(llvm::Type::getInt32Ty(Context));
 }
 
 void CodeGenASTVisitor::Exit(LocalDeclarationStatementAST&)
 {
-    InDeclarationStatement = false;
+    CurrentLocalBeingDeclared = nullptr;
 }
 
-void CodeGenASTVisitor::Visit(AssignmentStatementAST&)
+void CodeGenASTVisitor::Visit(AssignmentStatementAST& assignmentStatement)
 {
-    InAssignmentStatement = true;
 }
 
 void CodeGenASTVisitor::Exit(AssignmentStatementAST&)
 {
-    InAssignmentStatement = false;
 }
 
 void CodeGenASTVisitor::Visit(FactorAST& factor)
@@ -89,19 +93,11 @@ void CodeGenASTVisitor::Exit(IntegerFactorAST& integerFactor)
 
 void CodeGenASTVisitor::Visit(IdentifierAST& identifier)
 {
-    if (InDeclarationStatement)
+    if (CurrentLocalBeingDeclared)
     {
-        llvm::Type* IntType = llvm::Type::getInt32Ty(Context);
-
-        CurrentDeclaredLocal = Builder.CreateAlloca(
-                    IntType,
-                    0,
-                    identifier.IdentifierName);
-
-        LocalSymbolTable.emplace(
-                    std::make_pair(
-                        identifier.IdentifierName,
-                        CurrentDeclaredLocal));
+        // If this is visited for the purpose of declaring a local variable,
+        // give the local variable the same name as the identifier.
+        CurrentLocalBeingDeclared->setName(identifier.IdentifierName);
     }
 }
 

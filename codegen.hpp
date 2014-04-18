@@ -11,15 +11,11 @@ public:
     llvm::LLVMContext& Context;
     llvm::Module& TargetModule;
     llvm::IRBuilder<> Builder;
-    std::map<std::string, llvm::AllocaInst*> LocalSymbolTable;
 
     llvm::Function* MainFunction = nullptr;
-    llvm::BasicBlock* GlobalBasicBlock = nullptr;
+    llvm::BasicBlock* MainBasicBlock = nullptr;
 
-    bool InDeclarationStatement = false;
-    llvm::AllocaInst* CurrentDeclaredLocal = nullptr;
-
-    bool InAssignmentStatement = false;
+    llvm::AllocaInst* CurrentLocalBeingDeclared = nullptr;
 
     CodeGenASTVisitor(llvm::Module& targetModule);
 
