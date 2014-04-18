@@ -8,6 +8,8 @@
 #include "astxml.hpp"
 
 #include <llvm/IR/Module.h>
+#include <llvm/Bitcode/ReaderWriter.h>
+#include <llvm/Support/raw_ostream.h>
 
 void run(std::istream& inputStream)
 {
@@ -38,6 +40,10 @@ void run(std::istream& inputStream)
     pModule->Accept(codeGenerator);
 
     llvmModule.dump();
+
+    std::string outputErrorInfo;
+    llvm::raw_fd_ostream outputFile("a.bc", outputErrorInfo, llvm::sys::fs::F_Binary);
+    llvm::WriteBitcodeToFile(&llvmModule, outputFile);
 }
 
 int main(int argc, char* argv[])

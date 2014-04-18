@@ -36,6 +36,7 @@ void CodeGenASTVisitor::Visit(ModuleAST&)
 
 void CodeGenASTVisitor::Exit(ModuleAST& module)
 {
+    Builder.CreateRet(llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 0));
 }
 
 void CodeGenASTVisitor::Visit(StatementAST& statement)
@@ -129,11 +130,23 @@ void CodeGenASTVisitor::Visit(IdentifierAST& identifier)
     }
     else if (CurrentAssignmentOperands)
     {
-        llvm::Value** pOperand = !CurrentAssignmentOperands->first ? &(CurrentAssignmentOperands->first)
-                               : !CurrentAssignmentOperands->second ? &(CurrentAssignmentOperands->second)
-                               : throw std::logic_error("No operands are unfulfilled.");
+        llvm::Value* variable = LocalSymbolTable.at(identifier.IdentifierName);
 
-        *pOperand = LocalSymbolTable.at(identifier.IdentifierName);
+        if (!CurrentAssignmentOperands->first)
+        {
+            // This is the variable to write to.
+            CurrentAssignmentOperands->first = variable;
+        }
+        else if (!CurrentAssignmentOperands->second)
+        {
+            // This variable is being read from.
+            llvm::Value* loadedValue = Builder.CreateLoad(variable);
+            CurrentAssignmentOperands->second = loadedValue;
+        }
+        else
+        {
+            throw std::logic_error("No operands are unfulfilled.");
+        }
     }
 }
 
