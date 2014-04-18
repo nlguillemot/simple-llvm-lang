@@ -12,6 +12,7 @@ add_executable(simple
     lexer.hpp lexer.cpp
     ast.hpp ast.cpp
     parser.hpp parser.cpp
+    astxml.hpp astxml.cpp
     codegen.hpp codegen.cpp)
 
 add_custom_command(TARGET simple POST_BUILD

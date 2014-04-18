@@ -1,23 +1,42 @@
 #include "ast.hpp"
 
+template<class T>
+struct ScopedVisit
+{
+    T& Visited;
+    IASTVisitor& Visitor;
+
+    ScopedVisit(T& visited, IASTVisitor& visitor)
+        : Visited(visited)
+        , Visitor(visitor)
+    {
+        Visitor.Visit(Visited);
+    }
+
+    ~ScopedVisit()
+    {
+        Visitor.Exit(Visited);
+    }
+};
+
 void IdentifierAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<IdentifierAST> visit(*this, visitor);
 }
 
 void IntegerAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<IntegerAST> visit(*this, visitor);
 }
 
 void FactorAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<FactorAST> visit(*this, visitor);
 }
 
 void IdentifierFactorAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<IdentifierFactorAST> visit(*this, visitor);
 
     if (Identifier)
     {
@@ -27,7 +46,7 @@ void IdentifierFactorAST::Accept(IASTVisitor& visitor)
 
 void IntegerFactorAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<IntegerFactorAST> visit(*this, visitor);
 
     if (Integer)
     {
@@ -37,12 +56,12 @@ void IntegerFactorAST::Accept(IASTVisitor& visitor)
 
 void StatementAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<StatementAST> visit(*this, visitor);
 }
 
 void LocalDeclarationStatementAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<LocalDeclarationStatementAST> visit(*this, visitor);
 
     if (DeclaredIdentifier)
     {
@@ -52,7 +71,7 @@ void LocalDeclarationStatementAST::Accept(IASTVisitor& visitor)
 
 void AssignmentStatementAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<AssignmentStatementAST> visit(*this, visitor);
 
     if (LeftSide)
     {
@@ -67,7 +86,7 @@ void AssignmentStatementAST::Accept(IASTVisitor& visitor)
 
 void ModuleAST::Accept(IASTVisitor& visitor)
 {
-    visitor.Visit(*this);
+    ScopedVisit<ModuleAST> visit(*this, visitor);
 
     for (std::unique_ptr<StatementAST>& pStatement : Statements)
     {

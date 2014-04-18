@@ -4,6 +4,31 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 
+#include "astxml.hpp"
+
+void run(std::istream& inputStream)
+{
+    Lexer lexer(inputStream);
+
+    Parser parser(lexer);
+
+    std::unique_ptr<ModuleAST> pModule;
+
+    try
+    {
+        pModule = parser.AcceptModule();
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << e.what() << '\n'
+                  << "Died on token: " << lexer.CurrentToken << '\n';
+        throw;
+    }
+
+    XMLWriterASTVisitor xmlWriter(std::cout);
+    pModule->Accept(xmlWriter);
+}
+
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -22,20 +47,5 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    Lexer lexer(inputFile);
-
-    Parser parser(lexer);
-
-    std::unique_ptr<ModuleAST> pModule;
-
-    try
-    {
-        pModule = parser.AcceptModule();
-    }
-    catch (const std::exception& e)
-    {
-        std::cout << e.what() << '\n'
-                  << "Died on token: " << lexer.CurrentToken << '\n';
-        throw;
-    }
+    run(inputFile);
 }

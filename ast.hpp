@@ -102,20 +102,29 @@ public:
 
     // module
     virtual void Visit(ModuleAST& module)                                  = 0;
+    virtual void Exit(ModuleAST& module)                                   = 0;
 
     // statements
-    virtual void Visit(StatementAST& statement)                            = 0;
-    virtual void Visit(LocalDeclarationStatementAST& localDeclStatement)   = 0;
-    virtual void Visit(AssignmentStatementAST& assignmentStatement)        = 0;
+    virtual void Visit(StatementAST& statement)                                   = 0;
+    virtual void Exit(StatementAST& statement)                                    = 0;
+    virtual void Visit(LocalDeclarationStatementAST& localDeclarationStatement)   = 0;
+    virtual void Exit(LocalDeclarationStatementAST& localDeclarationStatement)    = 0;
+    virtual void Visit(AssignmentStatementAST& assignmentStatement)               = 0;
+    virtual void Exit(AssignmentStatementAST& assignmentStatement)                = 0;
 
     // factors
     virtual void Visit(FactorAST& factor)                                  = 0;
+    virtual void Exit(FactorAST& factor)                                   = 0;
     virtual void Visit(IdentifierFactorAST& identifierFactor)              = 0;
+    virtual void Exit(IdentifierFactorAST& identifierFactor)               = 0;
     virtual void Visit(IntegerFactorAST& integerFactor)                    = 0;
+    virtual void Exit(IntegerFactorAST& integerFactor)                     = 0;
 
     // basic terminals
     virtual void Visit(IdentifierAST& identifier)                          = 0;
+    virtual void Exit(IdentifierAST& identifier)                           = 0;
     virtual void Visit(IntegerAST& integer)                                = 0;
+    virtual void Exit(IntegerAST& integer)                                 = 0;
 };
 
 #endif // SIMPLE_AST_HPP
