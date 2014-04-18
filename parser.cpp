@@ -31,12 +31,12 @@ std::unique_ptr<StatementAST> Parser::AcceptStatement()
     std::unique_ptr<StatementAST> pStatement;
 
     // For local variable declarations.
-    if (CheckOptionalTokenOfType(TokenType::Local))
+    if (CheckOptionalTokenOfType(TokenType::KwLocal))
     {
         std::unique_ptr<LocalDeclarationStatementAST> pLocalDeclStatement(new LocalDeclarationStatementAST);
 
         // Accept the "local" keyword.
-        AcceptMandatoryTokenOfType(TokenType::Local);
+        AcceptMandatoryTokenOfType(TokenType::KwLocal);
 
         // Ensure whitespace between "local" and the identifier it declares.
         AcceptMandatoryTokenOfType(TokenType::Whitespace);

@@ -10,11 +10,14 @@ enum class TokenType
     Invalid,
     EndOfFile,
     Whitespace,
+
     // tokens used as factors
     Identifier, // AsString: the name of the identifier.
     Integer,    // AsInt: The numeric value of the integer.
+
     // keywords
-    Local,
+    KwLocal,
+
     // operators
     OpAssign
 };

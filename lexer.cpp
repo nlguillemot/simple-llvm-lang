@@ -49,7 +49,7 @@ void Lexer::GetNext()
         auto stringit = StringSet.insert(std::move(id)).first;
         if (*stringit == "local")
         {
-            CurrentToken = Token(TokenType::Local);
+            CurrentToken = Token(TokenType::KwLocal);
         }
         else
         {
