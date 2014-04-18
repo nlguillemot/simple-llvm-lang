@@ -8,8 +8,10 @@ endif()
 
 add_executable(simple
     main.cpp
-    token.hpp lexer.hpp lexer.cpp
-    ast.hpp parser.hpp parser.cpp
+    token.hpp token.cpp
+    lexer.hpp lexer.cpp
+    ast.hpp ast.cpp
+    parser.hpp parser.cpp
     codegen.hpp codegen.cpp)
 
 add_custom_command(TARGET simple POST_BUILD
