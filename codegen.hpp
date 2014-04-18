@@ -15,7 +15,15 @@ public:
     llvm::Function* MainFunction = nullptr;
     llvm::BasicBlock* MainBasicBlock = nullptr;
 
-    llvm::AllocaInst* CurrentLocalBeingDeclared = nullptr;
+    std::map<std::string, llvm::Value*> LocalSymbolTable;
+
+    // If we are in a local variable declaration, this will be non-null.
+    // Its name will be given when the next IdentifierAST is visited.
+    llvm::Value* CurrentLocalBeingDeclared = nullptr;
+
+    // If we are in a binary operator, then this is non-null
+    // and the binary operands are to be stored in the pair's members.
+    std::unique_ptr<std::pair<llvm::Value*,llvm::Value*>> CurrentAssignmentOperands;
 
     CodeGenASTVisitor(llvm::Module& targetModule);
 
